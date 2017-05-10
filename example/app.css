@@ -1,0 +1,11 @@
+.outer {
+  margin: 100px;
+  padding: 100px;
+  background-color: blue;
+  height: 800px;
+  overflow: hidden;
+}
+.inner {
+  background-color: green;
+  height: 400px;
+}
