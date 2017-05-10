@@ -35,7 +35,7 @@
   ],
   "license": "MIT",
   "main": "build/Tooltip.js",
-  "name": "f1-sticky",
+  "name": "f1-tooltip",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nicocrm/f1-tooltip"
