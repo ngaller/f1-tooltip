@@ -32,6 +32,7 @@ var Tooltip = function (_React$PureComponent) {
 
     _this.initRef = _this.initRef.bind(_this);
     _this.state = {};
+    _this.onWindowClick = _this.onWindowClick.bind(_this);
     return _this;
   }
 
@@ -39,9 +40,25 @@ var Tooltip = function (_React$PureComponent) {
     key: 'initRef',
     value: function initRef(node) {
       if (node) {
-
         this.node = node;
+        this.node.addEventListener('click', function (e) {
+          return e.stopPropagation();
+        });
+      } else {
+        console.log('unbind');
+        window.removeEventListener('click', this.onWindowClick);
       }
+    }
+  }, {
+    key: 'onWindowClick',
+    value: function onWindowClick(e) {
+      console.log('dismissing');
+      if (this.props.dismiss) this.props.dismiss();
+    }
+  }, {
+    key: 'isArrowOnTop',
+    value: function isArrowOnTop() {
+      return this.state.y >= this.props.y;
     }
   }, {
     key: 'getStyle',
@@ -57,9 +74,10 @@ var Tooltip = function (_React$PureComponent) {
       var style = {
         top: this.state.y + 'px',
         left: this.state.x + 'px',
+        zIndex: 999,
         position: 'fixed'
       };
-      if (this.state.y < this.props.y) {
+      if (!this.isArrowOnTop()) {
         // tooltip on top
         style.paddingBottom = '8px';
       } else {
@@ -79,7 +97,7 @@ var Tooltip = function (_React$PureComponent) {
         borderLeft: '8px solid transparent',
         borderRight: '8px solid transparent'
       };
-      if (this.state.y < this.props.y) {
+      if (!this.isArrowOnTop()) {
         // tooltip is on top, we need a bottom arrow
         style.borderTop = '8px solid black';
         style.bottom = 0;
@@ -97,7 +115,12 @@ var Tooltip = function (_React$PureComponent) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       this.recalcDims();
+      if (this.props.dismiss) setTimeout(function () {
+        window.addEventListener('click', _this2.onWindowClick);
+      }, 1000);
     }
   }, {
     key: 'componentDidUpdate',
@@ -134,10 +157,12 @@ var Tooltip = function (_React$PureComponent) {
   }, {
     key: 'render',
     value: function render() {
+      var cls = 'f1-tooltip ' + (this.props.className || '');
+      var arrowCls = 'f1-tooltip--arrow ' + (this.isArrowOnTop() ? 'up' : 'down');
       return _react2.default.createElement(
         'div',
-        { className: 'f1-tooltip', ref: this.initRef, style: this.getStyle() },
-        _react2.default.createElement('div', { className: 'f1-tooltip--arrow', style: this.getArrowStyle() }),
+        { className: cls, ref: this.initRef, style: this.getStyle() },
+        _react2.default.createElement('div', { className: arrowCls, style: this.getArrowStyle() }),
         _react2.default.createElement(
           'div',
           { className: 'f1-tooltip--content' },
@@ -150,6 +175,11 @@ var Tooltip = function (_React$PureComponent) {
   return Tooltip;
 }(_react2.default.PureComponent);
 
-Tooltip.propTypes = {};
+Tooltip.propTypes = {
+  x: _propTypes2.default.number.isRequired,
+  y: _propTypes2.default.number.isRequired,
+  className: _propTypes2.default.string,
+  dismiss: _propTypes2.default.func
+};
 
 exports.default = Tooltip;
