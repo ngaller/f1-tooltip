@@ -11,7 +11,6 @@
     "budo": "^10.0.3",
     "chai": "^3.5.0",
     "chai-enzyme": "^0.6.1",
-    "cssify": "^1.0.3",
     "enzyme": "^2.4.1",
     "eslint": "^3.2.2",
     "eslint-config-f1-react": "^1.0.1",
@@ -31,7 +30,7 @@
   },
   "homepage": "http://f1code.com",
   "keywords": [
-    "react"
+    "react", "tooltip"
   ],
   "license": "MIT",
   "main": "build/Tooltip.js",
@@ -45,8 +44,8 @@
     "build": "babel src --out-dir build",
     "prepublish": "npm run build",
     "test": "babel-node node_modules/mocha/bin/_mocha test/**/*.spec.js -r ./test/setup.js --recursive",
-    "start": "budo example/index.js --css example/app.css --live -- -t [ babelify --presets [ react es2015 ] ] -t cssify"
+    "start": "budo example/index.js --css example/app.css --live -- -t [ babelify --presets [ react es2015 ] ]"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {}
 }

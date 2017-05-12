@@ -7,13 +7,27 @@ class Tooltip extends React.PureComponent {
     this.initRef = this.initRef.bind(this)
     this.state = {
     }
+    this.onWindowClick = this.onWindowClick.bind(this)
   }
 
   initRef(node) {
     if(node) {
-
       this.node = node
+      this.node.addEventListener('click', e => e.stopPropagation())
+    } else {
+      console.log('unbind');
+      window.removeEventListener('click', this.onWindowClick)
     }
+  }
+
+  onWindowClick(e) {
+    console.log('dismissing');
+    if(this.props.dismiss)
+      this.props.dismiss()
+  }
+
+  isArrowOnTop() {
+    return this.state.y >= this.props.y
   }
 
   getStyle() {
@@ -25,9 +39,10 @@ class Tooltip extends React.PureComponent {
     const style = {
       top: this.state.y + 'px',
       left: this.state.x + 'px',
+      zIndex: 999,
       position: 'fixed'
     }
-    if(this.state.y < this.props.y) {
+    if(!this.isArrowOnTop()) {
       // tooltip on top
       style.paddingBottom = '8px'
     } else {
@@ -47,7 +62,7 @@ class Tooltip extends React.PureComponent {
       borderLeft: '8px solid transparent',
       borderRight: '8px solid transparent',
     }
-    if(this.state.y < this.props.y) {
+    if(!this.isArrowOnTop()) {
       // tooltip is on top, we need a bottom arrow
       style.borderTop = '8px solid black'
       style.bottom = 0
@@ -67,6 +82,10 @@ class Tooltip extends React.PureComponent {
 
   componentDidMount() {
     this.recalcDims()
+    if(this.props.dismiss)
+      setTimeout(() => {
+        window.addEventListener('click', this.onWindowClick)
+      }, 1000)
   }
 
   componentDidUpdate() {
@@ -97,8 +116,10 @@ class Tooltip extends React.PureComponent {
   }
 
   render() {
-    return <div className='f1-tooltip' ref={this.initRef} style={this.getStyle()}>
-      <div className='f1-tooltip--arrow' style={this.getArrowStyle()}/>
+    const cls = 'f1-tooltip ' + (this.props.className || '')
+    const arrowCls = 'f1-tooltip--arrow ' + (this.isArrowOnTop() ? 'up' : 'down')
+    return <div className={cls} ref={this.initRef} style={this.getStyle()}>
+      <div className={arrowCls} style={this.getArrowStyle()}/>
       <div className='f1-tooltip--content'>
       {this.props.children}
       </div>
@@ -107,6 +128,10 @@ class Tooltip extends React.PureComponent {
 }
 
 Tooltip.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  className: PropTypes.string,
+  dismiss: PropTypes.func
 }
 
 export default Tooltip
