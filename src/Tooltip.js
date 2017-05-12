@@ -15,13 +15,11 @@ class Tooltip extends React.PureComponent {
       this.node = node
       this.node.addEventListener('click', e => e.stopPropagation())
     } else {
-      console.log('unbind');
       window.removeEventListener('click', this.onWindowClick)
     }
   }
 
   onWindowClick(e) {
-    console.log('dismissing');
     if(this.props.dismiss)
       this.props.dismiss()
   }
@@ -31,7 +29,6 @@ class Tooltip extends React.PureComponent {
   }
 
   getStyle() {
-    const {x,y} = this.props
     if(!(this.state.x && this.state.y)) {
       // we need to be able to compute the size, in order to place the tooltip
       return { position: 'fixed', visibility: 'hidden', paddingTop: '8px' }
@@ -56,9 +53,9 @@ class Tooltip extends React.PureComponent {
       return {}
     const style = {
       display: 'block',
-      width:0,
-      height:0,
-      position:'absolute',
+      width: 0,
+      height: 0,
+      position: 'absolute',
       borderLeft: '8px solid transparent',
       borderRight: '8px solid transparent',
     }
